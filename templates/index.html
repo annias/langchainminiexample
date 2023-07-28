@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            margin-bottom: 5px;
+        }
+        textarea {
+            min-width: 600px;
+            min-height: 400px;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<form method="POST" id="promptForm">
+    <label class="bold">Prompt 1:</label>
+    <input type="text" name="prompts" placeholder="Enter prompt">
+</form>
+<button onclick="addPrompt()">Add Prompt</button>
+<label class="bold">Output:</label>
+<textarea readonly id="output">{{ output }}</textarea>
+<div class="button-container">
+    <input type="submit" form="promptForm" value="Run">
+    <button onclick="saveAs()">Save As</button>
+</div>
+
+<script>
+function addPrompt() {
+    // Create new label element
+    let newLabel = document.createElement('label');
+    newLabel.textContent = 'Prompt ' + (document.querySelectorAll('input[name="prompts"]').length + 1) + ':';
+    newLabel.classList.add('bold');
+
+    // Create new input element
+    let newPrompt = document.createElement('input');
+    newPrompt.type = 'text';
+    newPrompt.name = 'prompts';
+    newPrompt.placeholder = 'Enter prompt';
+    
+    // Append to form
+    let form = document.getElementById('promptForm');
+    form.appendChild(newLabel);
+    form.appendChild(newPrompt);
+}
+
+function saveAs() {
+    // Get output text
+    let output = document.getElementById('output').value;
+
+    // Create a downloadable blob
+    let blob = new Blob([output], {type: 'text/plain'});
+    let url = URL.createObjectURL(blob);
+
+    // Create a download link and click it
+    let link = document.createElement('a');
+    link.download = 'output.txt';
+    link.href = url;
+    link.click();
+
+    // Clean up
+    URL.revokeObjectURL(url);
+    link.remove();
+}
+</script>
+
+</body>
+</html>
